@@ -1,0 +1,7 @@
+.screenshots-container { display:flex; flex-direction:row; flex-wrap:wrap; align-items:stretch; align-content:flex-start; }
+.screenshot { display:flex; flex-direction:column; flex-wrap:wrap; align-items:flex-start; width:100%; }
+.screenshot:hover {border:1px solid #c66!important}
+.screenshot-note {width:100%;}
+.screenshots-container-controls { width:100%;}
+.screenshot-timestamp,.screenshot-timerange { font-style:italic; width:100%; padding-left:5px;}
+/*.screenshot-clear-all,.screenshot-save-png,.screenshot-save-jpg { padding-left:20px; padding-right:20px; }*/

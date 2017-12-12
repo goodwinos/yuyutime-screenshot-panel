@@ -1,0 +1,32 @@
+node_modules
+npm-debug.log
+/emails/dist
+/public_gen
+/tmp
+
+docs/GIT_BRANCH
+docs/VERSION
+docs/GITCOMMIT
+docs/changed-files
+docs/changed-files
+
+# locally required config files
+public/css/*.min.css
+
+
+# Editor and other junk
+*.tmp
+*.bak
+*~
+*.sublime-workspace
+*.swp
+.idea/
+*.iml
+
+/OLD/*
+/old/*
+/data/*
+/bin/*
+
+grafana
+.tscache

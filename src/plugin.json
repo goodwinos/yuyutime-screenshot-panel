@@ -1,0 +1,31 @@
+{
+  "type": "panel",
+  "name": "Screenshot",
+  "id": "yuyutime-screenshot-panel",
+
+  "metrics": false,
+  "annotations": false,
+  "alerting": false,
+      
+  "info": {
+    "description": "Panel plugin to take png screenshots of panels in dashboard, save them to files or accumulate in panel",
+    "author": {
+      "name": "Yuri Lachin",
+      "url": "https://github.com/yuyutime/yuyutime-screenshot-panel"
+    },
+    "keywords": [ "grafana", "plugin", "panel", "screenshot"],
+    "logos": { 
+  	  "small": "screenshot-panel.svg",
+  	  "large": "screenshot-panel.svg"
+	},
+    "links": [ ],
+    "screenshots": [ ],
+    "version": "0.0.2",
+    "updated": "2017-11-30"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "4.x.x",
+    "plugins": [ ]
+  }
+}
