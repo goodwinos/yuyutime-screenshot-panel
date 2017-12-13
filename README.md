@@ -20,20 +20,25 @@ and
 
 * This plugin does not use server-side rendering - everything is done in clients' browser
 * Add a single instance of this panel to dashboard
-* Use Ctrl-RightClick on a panel of your choice to trigger screenshot dialog
+* Use Ctrl-RightClick on a panel of your choice to open screenshot dialog
+* Select screenshot source (**Panel** is default).
 * Select screenshot format (**PNG** is default). 
 * **File** format option takes screenshot and opens standard browser file saving dialog (always in PNG format)
-* Add text note, screenshot time and dashboard time range to screenshot if needed
+* Add optional text note, screenshot time and dashboard time range to screenshot if needed
   (you can edit/add text notes any time later.)
 * Press submit button to complete.
 * Taken screenshot will be added to this panel unless **File** was selected.
 
-If **Max entries > 0** panel option set the maximum number of screenshots to keep.
-After this limit is reached the older screenshost will be deleted on a FIFO basis.
+If non-zero **Max entries** panel option is set the number of screenshots in panel will be limited to this number.
+After this limit is reached the older screenshot will be deleted on a FIFO basis.
 
+## Notes
 
-## Options
-
+* There should be only one instance of screenshot panel per dashboard
+* If **Dashboard** is selected as screenshot source result will include this panel too. 
+So, it's wise to empty it before action.
+* If screenshot panel is not shown (row is collapsed) Ctrl-RightClick binding is disabled.
+* All screenshots in panel are lost when this panel is hidden or when you switch to another dashboard.
 <hr>
 
 ## Build plugin

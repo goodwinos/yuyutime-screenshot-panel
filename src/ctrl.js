@@ -1,14 +1,13 @@
 ///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 import { PanelCtrl } from 'grafana/app/plugins/sdk';
 import appEvents from 'grafana/app/core/app_events';
-import  $ from 'jquery';
 
 import domtoimage from 'dom-to-image';
 import saveAs from 'save-as';
 import './panel.css';
 
 const moduleTemplate = `
-<div id="screenshots">
+<div>
   <div class="row screenshots-container-controls"  ng-model="ctrl.entriesCounter" ng-change="ctrl.render()">
 	<button class="btn btn-inverse screenshot-clear-all"><i class="fa fa-remove"></i>
 	  &nbsp;Clear All ({{ctrl.entriesCounter}})
@@ -43,23 +42,25 @@ const  modalTemplate = `
 	</div>
 	<hr>
 
-	<gf-form-switch class="gf-form" checked="ctrl.settings.addTimeRange"  label-class="width-30" label="Add dashboard time range to screenshot?"></gf-form-switch>
-	<gf-form-switch class="gf-form" checked="ctrl.settings.addTimestamp"  label-class="width-30" label="Add screenshot timestamp?"></gf-form-switch>
+	<div class="gf-form-group section width-30" on-change="ctrl.render()">
+	  <label class="gf-form-label">Screenshot source</label>
+		<input type="radio" name=screenshotSelector value=".panel-container"  ng-model="ctrl.screenshotSelector"/> &nbsp; Panel &nbsp
+		<input type="radio" name=screenshotSelector value=".dash-row" ng-model="ctrl.screenshotSelector"/> &nbsp; Row &nbsp;
+		<input type="radio" name=screenshotSelector value=".dashboard-container" ng-model="ctrl.screenshotSelector"/> &nbsp; Dashboard
+	</div>
 
-	<div class="gf-form-group section" on-change="ctrl.render()">
-	  <fieldset title="Screenshot format">
-		<input type="radio" name=imageFormat value="png" class="" ng-model="ctrl.imageFormat"> &nbsp;PNG </input>
-		<input type="radio" name=imageFormat value="jpg" class="" ng-model="ctrl.imageFormat"> &nbsp;JPEG </input>
-		<input type="radio" name=imageFormat value="svg" class="" ng-model="ctrl.imageFormat"> &nbsp;SVG </input>
-
-		<hr>
-
-		<input type="radio" name=imageFormat value="file" class="" ng-model="ctrl.imageFormat">&nbsp;File</input>
-		<span>(<i>File is always saved in PNG format</i>)</span>
-	  </fieldset>
+	<div class="gf-form-group section width-30" on-change="ctrl.render()">
+	  <label class="gf-form-label">Image format</label>
+	  <input type="radio" name=imageFormat value="png" ng-model="ctrl.imageFormat"> &nbsp;PNG </input>&nbsp;
+	  <input type="radio" name=imageFormat value="jpg" ng-model="ctrl.imageFormat"> &nbsp;JPEG </input>&nbsp;
+	  <input type="radio" name=imageFormat value="svg" ng-model="ctrl.imageFormat"> &nbsp;SVG </input>&nbsp;
+	  <input type="radio" name=imageFormat value="file" class="" ng-model="ctrl.imageFormat">&nbsp;File</input>
+	  <span>(<i>File is always saved in PNG format</i>)</span>
 	</div>
 
 	<div ng-if="ctrl.imageFormat!='file'">
+	  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimeRange"  label-class="width-30" label="Add dashboard time range to screenshot?"></gf-form-switch>
+	  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimestamp"  label-class="width-30" label="Add screenshot timestamp?"></gf-form-switch>
 	  <div class="gf-form">
 		<textarea rows="7" type="text" name="note" class="gf-form-input" ng-model="ctrl.note"
 		  placeholder="Optional note to this screenshot &hellip;"
@@ -67,6 +68,7 @@ const  modalTemplate = `
 		  autocomplete="off" />
 		</div>
 	</div>
+
 
 	<div class="gf-form-button-row text-center">
 	  <button type="submit" class="btn btn-success fa fa-camera">&nbsp;Take screenshot as {{ctrl.imageFormat}}</button>
@@ -85,6 +87,8 @@ const panelDefaults = {
   timestampFormat:'YYYY-MM-DD HH:mm:ss(Z)',
   timeRangeFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
   screenshotSelector: '.panel-container', //what to screenshot
+  //screenshotSelector: '.dash-row',
+  //screenshotSelector: '.dashboard-container',
   imageFormat: 'png',
   maxEntries: 10 // older screenshots removed on FIFO basis. Set maxEntries = 0 for unlimited
 }
@@ -97,48 +101,31 @@ export class Ctrl extends PanelCtrl {
     _.defaults(this.settings, panelDefaults);
 
 	var self = this;
-	var panelToScreenshot;
+	var screenshotSource;
 	this.note = '';
-	this.maxNoteLength = 15;
 	this.entriesCounter = 0; // reset counter of added screenshots
-
+/*
 	window.THISCTRL = this; //for debug only
-
+	window.INJECTOR = $injector; // debug
+	window.SCOPE = $scope; //debug
+*/
 	this.events.on('panel-teardown', this.onPanelTeardown.bind(this));
 	this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
 
-	$('body').on('click', '.screenshots-container-controls .screenshot-clear-all', function() { 
-	  $(this).parent().next().empty();
-	  console.log('Removing all screenshots in panel for ',this); 
-	  self.entriesCounter = 0; // reset counter of added screenshots
-	});
-
-	$('div').on('click','.screenshots-container .fa-remove',function(){ // remove single screenshot
-		if (self.entriesCounter > 0){
-			$(this).parent().remove();$(this).unbind('click');
-			self.entriesCounter--;
-			console.debug('removing screenshot');
-			////appEvents.emit('render');
+	if (!this.contexmenuSet) {
+	  $(document).on("contextmenu", '.panel:not(".screenshot")', function($event) {
+		self.contexmenuSet = true;
+		if ($event.ctrlKey) { // trigger screenshot dialog on Ctrl-RightClick
+		  self.showScreenshotsModal($event);
 		}
-	});
-
-	$(document).on("contextmenu", '.panel:not(".screenshot")', function($event) { 
-	  if ($event.ctrlKey) { // trigger screenshot dialog on Ctrl-RightClick
-		self.showScreenshotsModal($event);
-	  }
-	});
+	  });
+	}
 
 	if (this.settings.disableDraggable) { 
-	  //hack:  disable draggable attribute to make text selection working in grafana panels
+	  // hack: disable draggable attribute to make text selection working in grafana panels
 	  // way-around for https://github.com/grafana/grafana/issues/2083
 	  $('.panel').each(function(i, obj) { obj.setAttribute("draggable", "false"); });
 	}
-  }
-
-  clearAll() {
-	  $(this).parent().next().empty();
-	  console.log('Removing all screenshots in panel for ',this); 
-	  self.entriesCounter = 0; // reset counter of added screenshots
   }
 
   dismiss(){
@@ -147,21 +134,13 @@ export class Ctrl extends PanelCtrl {
 
 
   showScreenshotsModal($event) {
-	let $panel = $($event.target).closest(this.settings.screenshotSelector);
-	this.panelToScreenshot = $panel.get(0);
-    var modalScope = this.$scope.$new(true);
-    
+    let modalScope = this.$scope.$new(true);
+
     $event.stopPropagation();
     $event.preventDefault();
-/*
-    window.E=$event;
-    window.T=this;
-    window.S=$event.data;
-*/
-    modalScope.ctrl = this;
+    this.screenshotEvent = $event;
 
-	window.MODSCOPE=modalScope;
-	//console.log('Now in showScreenshotsModal with modalScope=',modalScope);
+    modalScope.ctrl = this;
 
     this.publishAppEvent('show-modal', {
       templateHtml: modalTemplate,
@@ -179,17 +158,53 @@ export class Ctrl extends PanelCtrl {
   }
 
   onPanelTeardown() {
+	console.log('panel Teardown event handler');
     this.$timeout.cancel(this.nextTickPromise);
     this.entriesCounter = 0;
-	//console.log('panel Teardown event handler');
+	this.contextmenuSet = false;
+    // turn off context menu dialog for screenshooter
+	$(document).off("contextmenu", '.panel:not(".screenshot")')
   }
 
-  takeScreenshot(destination, imageFormat=null) {
-	let timestamp = '', timerange = '', ctime = (new Date).getTime(), from='N/A', to='N/A';
-	const source = this.panelToScreenshot;
-	let maxEntries = this.settings.maxEntries;
+  link(scope, elem, attrs, ctrl) {
+	//console.debug('called link(scope, elem, attrs, ctrl) with args:',scope, elem, attrs, ctrl );
+	this.screenshotsContainer = elem.find('.screenshots-container');
+
+	elem.on('click','.screenshots-container .fa-remove',function(){ // remove single screenshot
+	  console.debug('removing screenshot');
+	  this.parentNode.remove();
+	  ctrl.render();
+	  if (ctrl.entriesCounter > 0){
+		ctrl.entriesCounter--;
+	  }
+	});
+
+	elem.on('click', '.screenshot-clear-all', function() { 
+	  console.log('Removing all screenshots in panel for ',this); 
+	  $(this.parentNode.nextElementSibling).empty();
+	  ctrl.entriesCounter = 0; // reset counter of added screenshots
+	  ctrl.render();
+	});
+/*
+	scope.$watch('ctrl.entriesCounter', newVal => {
+	  if (newVal !== undefined) {
+        console.debug('entriesCounter watch:',newVal);
+	  }
+	});
+*/
+  }
+
+  takeScreenshot(destination='panel', imageFormat=null) {
 	let self=this;
-	var fmt = imageFormat || this.imageFormat || this.settings.imageFormat || 'png';
+	let timestamp = '', timerange = '', ctime = (new Date).getTime(), from='N/A', to='N/A';
+	let maxEntries = this.settings.maxEntries;
+	let fmt = imageFormat || this.imageFormat || this.settings.imageFormat || 'png';
+	let selector = this.screenshotSelector || this.settings.screenshotSelector;
+	var source = $(this.screenshotEvent.target).closest(selector).get(0);
+	console.log('source:', source);
+	//this.screenshotSource = source;
+
+	console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
 
 	destination = destination || 'panel';
 	if (fmt==='file') {
@@ -218,8 +233,7 @@ export class Ctrl extends PanelCtrl {
 
 	  case "panel":
 		if (maxEntries>0 && this.entriesCounter >= maxEntries) {
-		  //alert('Max configured number of screenshots in panel already reached! Removing the oldest screenshot.');
-		  $('#screenshots .screenshots-container .screenshot:first').remove();
+		  self.screenshotsContainer.find('.screenshot:first').remove();
 		  this.entriesCounter--;
 		}
 
@@ -228,9 +242,7 @@ export class Ctrl extends PanelCtrl {
 	
 		let dom2img = (fmt==='jpg') ? domtoimage.toJpeg : (fmt=='svg') ? domtoimage.toSvg: domtoimage.toPng;
 
-		let Note = '<div class="screenshot-note" contenteditable=true style="display:flex;flex-wrap:wrap;flex-direction:column;">'+
-				  timerange + timestamp + '<hr>' + this.note +
-				  '</div>';
+		let note = '<div class="screenshot-note" contenteditable=true>' + timerange + timestamp + '<hr>' + this.note + '</div>';
 
 		dom2img(source).then(function(dataURL){
 			let img = new Image();
@@ -238,13 +250,13 @@ export class Ctrl extends PanelCtrl {
 			img.alt = 'Dashboard range: ' + from + ' to ' + to;
 			img.width = source.clientWidth;
 			img.height = source.clientHeight;
-			$('#screenshots .screenshots-container').append(
+			self.screenshotsContainer.append(
 			  '<div class="screenshot" data-ctime='+ctime+' style="width:'+source.clientWidth+'px;">' + 
 			  '<span class="fa fa-remove" style="color:red;align-self:flex-start;"></span></div>'
 			);
-			$('#screenshots .screenshots-container .screenshot').last()
+			self.screenshotsContainer.find('.screenshot:last')
 			  .append(img)
-			  .append(Note);
+			  .append(note);
 		});
 	  break;
 
@@ -255,4 +267,3 @@ export class Ctrl extends PanelCtrl {
 }
 
 Ctrl.template = moduleTemplate;
-

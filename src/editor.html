@@ -1,65 +1,62 @@
 <div class="section gf-form-group width-30">
   <h5 class="warn">Make text selection working in panels</h5>
-  <gf-form-switch class="gf-form" label="Enable selection" label-class="width-16" checked="ctrl.settings.disableDraggable" ng-model="ctrl.settings.disableDraggable" on-change="ctrl.render()">
-  <div class="info">When fix is enabled it changes default grafana behaviour for all active panels - use with care</div>
+  <gf-form-switch class="gf-form" label="Enable selection tweak" 
+	label-class="width-16" checked="ctrl.settings.disableDraggable"
+	ng-model="ctrl.settings.disableDraggable" on-change="ctrl.render()">
+  </gf-form-switch>
+  <div class="text-warning">
+	When fix is enabled it changes default grafana behaviour for all active panels - use with care
+  </div>
 </div>
 
-<div class="section gf-form-group">
-    <h5>Screenshots number limit</h5>
-    <div class="gf-form">
-      <label class="gf-form-label width-10">Max Entries</label>
-      <input type="text" class="gf-form-input width-6" placeholder="0 (no limit)" empty-to-null ng-model="ctrl.settings.maxEntries" ng-change="ctrl.render()" ng-model-onblur>
-    </div>
-</div>
+<div class="section gf-form-group width-60">
+  <h5>Select screenshot source</h5>
+  <div style="display:flex;align-content:space-between;width:50%;">
+	<input type="radio" name=screenshotSelector value=".panel-container" ng-model="ctrl.screenshotSelector" default /> &nbsp; Panel &nbsp;
+	<input type="radio" name=screenshotSelector value=".dash-row" ng-model="ctrl.screenshotSelector"/> &nbsp; Row &nbsp;
+	<input type="radio" name=screenshotSelector value=".dashboard-container" ng-model="ctrl.screenshotSelector" /> &nbsp;Dashboard
+  </div>
+  
+  <h5>Screenshots number limit</h5>
+  <div class="gf-form">
+    <label class="gf-form-label width-10">Max Entries</label>
+    <input type="text" class="gf-form-input width-6" placeholder="0 (no limit)" empty-to-null ng-model="ctrl.settings.maxEntries" ng-change="ctrl.render()">
+  </div>
 
-<div class="section gf-form-group">
-    <h5>Timestamping</h5>
-    <div class="gf-form">
-      <label class="gf-form-label width-16">Times locale</label>
-      <div class="gf-form-select-wrapper">
-        <select class="gf-form-input"
-      	  ng-options="n for n in ['en', 'de', 'es','fr', 'it', 'ru']"
-          ng-change="ctrl.render()"
-          ng-model="ctrl.settings.locale"
-        />
-      </div>
-	</div>
-    <gf-form-switch class="gf-form" label="Add screenshot timestamp" label-class="width-16" checked="ctrl.settings.addTimestamp" on-change="ctrl.render()">
-    </gf-form-switch>
-	<div class="gf-form"  ng-if="ctrl.settings.addTimestamp" >
-    	<label class="gf-form-label width-16">Screenshot timestamp format</label>
-    	<input type="text" class="gf-form-input width-16" placeholder="" ng-model="ctrl.settings.timestampFormat" ng-change="ctrl.render()" ng-model-onblur>
-    </div>
-
-  	<gf-form-switch class="gf-form" label="Add dashboard time range" label-class="width-16" checked="ctrl.settings.addTimeRange" on-change="ctrl.render()">
-    </gf-form-switch>
-	<div class="gf-form" ng-if="ctrl.settings.addTimeRange" >
-    	<label class="gf-form-label width-16">Dashboard time range format</label>
-    	<input type="text" class="gf-form-input width-16" placeholder="YYYY-MM-DD HH:mm:ss(Z)" ng-model="ctrl.settings.timeRangeFormat" ng-change="ctrl.render()" ng-model-onblur>
-	</div>
-
-	<hr>
-
-    <h5>Screenshots details</h5>
-    <div class="gf-form-group">
-      <label class="gf-form-label width-16">Screenshot selector</label>
-      <div class="gf-form-select-wrapper">
-        <select
-          class="gf-form-input"
-          ng-options="n for n in ['.panel-container','.dash-row','.dashboard']"
-          ng-change="ctrl.render()"
-          ng-model="ctrl.settings.screenshotSelector"
-        />
-      </div>
-      <label class="gf-form-label width-8">Image format</label>
-      <div class="gf-form-select-wrapper width-6">
-        <select
-          class="gf-form-input"
+  <h5>Default image format</h5>
+  <div class="gf-form-select-wrapper width-6">
+    <select
+          class="gf-form-input gf-form-inline "
           ng-options="fmt for fmt in ['png','jpg', 'svg']"
           ng-change="ctrl.render()"
           ng-model="ctrl.settings.imageFormat"
-        />
-      </div>
-      <hr>
+    />
+  </div>
+</div>
+
+<div class="section gf-form-group">
+  <h5>Timestamping</h5>
+  <div class="gf-form">
+    <label class="gf-form-label width-16">Language</label>
+    <div class="gf-form-select-wrapper">
+      <select class="gf-form-input"
+      	  ng-options="n for n in ['en', 'de', 'es','fr', 'it', 'ru']"
+          ng-change="ctrl.render()"
+          ng-model="ctrl.settings.locale"
+      />
     </div>
+  </div>
+
+  <gf-form-switch class="gf-form" label="Add screenshot timestamp" label-class="width-16" checked="ctrl.settings.addTimestamp" on-change="ctrl.render()"></gf-form-switch>
+  <div class="gf-form"  ng-if="ctrl.settings.addTimestamp" >
+    <label class="gf-form-label width-16">Screenshot timestamp format</label>
+    <input type="text" class="gf-form-input width-16" placeholder="" ng-model="ctrl.settings.timestampFormat" ng-change="ctrl.render()">
+  </div>
+
+  <gf-form-switch class="gf-form" label="Add dashboard time range" label-class="width-16" checked="ctrl.settings.addTimeRange" on-change="ctrl.render()"></gf-form-switch>
+
+  <div class="gf-form" ng-if="ctrl.settings.addTimeRange" >
+    <label class="gf-form-label width-16">Dashboard time range format</label>
+    <input type="text" class="gf-form-input width-16" placeholder="YYYY-MM-DD HH:mm:ss(Z)" ng-model="ctrl.settings.timeRangeFormat" ng-change="ctrl.render()">
+  </div>
 </div>

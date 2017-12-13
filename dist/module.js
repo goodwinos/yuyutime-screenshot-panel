@@ -1,4 +1,4 @@
-define(["app/plugins/sdk","app/core/app_events","jquery"], function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) { return /******/ (function(modules) { // webpackBootstrap
+define(["app/plugins/sdk","app/core/app_events"], function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_3__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -108,19 +108,15 @@ var _app_events = __webpack_require__(3);
 
 var _app_events2 = _interopRequireDefault(_app_events);
 
-var _jquery = __webpack_require__(4);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _domToImage = __webpack_require__(5);
+var _domToImage = __webpack_require__(4);
 
 var _domToImage2 = _interopRequireDefault(_domToImage);
 
-var _saveAs = __webpack_require__(6);
+var _saveAs = __webpack_require__(5);
 
 var _saveAs2 = _interopRequireDefault(_saveAs);
 
-__webpack_require__(7);
+__webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -131,9 +127,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } ///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 
 
-var moduleTemplate = '\n<div id="screenshots">\n  <div class="row screenshots-container-controls"  ng-model="ctrl.entriesCounter" ng-change="ctrl.render()">\n\t<button class="btn btn-inverse screenshot-clear-all"><i class="fa fa-remove"></i>\n\t  &nbsp;Clear All ({{ctrl.entriesCounter}})\n\t</button>\n\t&nbsp;<span>Screenshots in panel: {{ctrl.entriesCounter}}</span>\n  </div>\n  <div class="screenshots-container">\n\t<!-- screenshots with clear btn, timestamps and note go here -->\n  </div>\n  <hr>\n</div>\n';
+var moduleTemplate = '\n<div>\n  <div class="row screenshots-container-controls"  ng-model="ctrl.entriesCounter" ng-change="ctrl.render()">\n\t<button class="btn btn-inverse screenshot-clear-all"><i class="fa fa-remove"></i>\n\t  &nbsp;Clear All ({{ctrl.entriesCounter}})\n\t</button>\n\t&nbsp;<span>Screenshots in panel: {{ctrl.entriesCounter}}</span>\n  </div>\n  <div class="screenshots-container">\n\t<!-- screenshots with clear btn, timestamps and note go here -->\n  </div>\n  <hr>\n</div>\n';
 
-var modalTemplate = '\n<div class="modal-body">\n  <div class="modal-header">\n\t<h2 class="modal-header-title">\n\t  <i class="fa fa-camera"></i>\n\t  <span class="p-l-1">Take screenshot</span>\n\t</h2>\n\t<span>Screenshots in panel:  <strong>{{ctrl.entriesCounter}}</strong> / max {{ctrl.settings.maxEntries}}</span>\n\t<a class="modal-header-close" ng-click="ctrl.dismiss();">\n\t  <i class="fa fa-remove"></i>\n\t</a>\n  </div>\n\n  <form name="screenshotForm" ng-submit="ctrl.takeScreenshot(\'panel\');ctrl.dismiss()" class="modal-content" novalidate>\n\t<div style="width:70%;" ng-if="ctrl.entriesCounter&&ctrl.entriesCounter==ctrl.settings.maxEntries">\n\t  There are already {{ctrl.entriesCounter}} = max configured number of screenshots in panel.\n\t  <br>\n\t  &rarr;&nbsp;The oldest screenshot will be removed!\n\t</div>\n\t<hr>\n\n\t<gf-form-switch class="gf-form" checked="ctrl.settings.addTimeRange"  label-class="width-30" label="Add dashboard time range to screenshot?"></gf-form-switch>\n\t<gf-form-switch class="gf-form" checked="ctrl.settings.addTimestamp"  label-class="width-30" label="Add screenshot timestamp?"></gf-form-switch>\n\n\t<div class="gf-form-group section" on-change="ctrl.render()">\n\t  <fieldset title="Screenshot format">\n\t\t<input type="radio" name=imageFormat value="png" class="" ng-model="ctrl.imageFormat"> &nbsp;PNG </input>\n\t\t<input type="radio" name=imageFormat value="jpg" class="" ng-model="ctrl.imageFormat"> &nbsp;JPEG </input>\n\t\t<input type="radio" name=imageFormat value="svg" class="" ng-model="ctrl.imageFormat"> &nbsp;SVG </input>\n\n\t\t<hr>\n\n\t\t<input type="radio" name=imageFormat value="file" class="" ng-model="ctrl.imageFormat">&nbsp;File</input>\n\t\t<span>(<i>File is always saved in PNG format</i>)</span>\n\t  </fieldset>\n\t</div>\n\n\t<div ng-if="ctrl.imageFormat!=\'file\'">\n\t  <div class="gf-form">\n\t\t<textarea rows="7" type="text" name="note" class="gf-form-input" ng-model="ctrl.note"\n\t\t  placeholder="Optional note to this screenshot &hellip;"\n\t\t  give-focus="true"\n\t\t  autocomplete="off" />\n\t\t</div>\n\t</div>\n\n\t<div class="gf-form-button-row text-center">\n\t  <button type="submit" class="btn btn-success fa fa-camera">&nbsp;Take screenshot as {{ctrl.imageFormat}}</button>\n\t  <button class="btn btn-inverse" ng-click="ctrl.dismiss();">Cancel</button>\n\t  <button type="reset" class="btn btn-inverse" ng-click="ctrl.note=\'\'">Reset</button>\n\t</div>\n  </form>\n</div>\n';
+var modalTemplate = '\n<div class="modal-body">\n  <div class="modal-header">\n\t<h2 class="modal-header-title">\n\t  <i class="fa fa-camera"></i>\n\t  <span class="p-l-1">Take screenshot</span>\n\t</h2>\n\t<span>Screenshots in panel:  <strong>{{ctrl.entriesCounter}}</strong> / max {{ctrl.settings.maxEntries}}</span>\n\t<a class="modal-header-close" ng-click="ctrl.dismiss();">\n\t  <i class="fa fa-remove"></i>\n\t</a>\n  </div>\n\n  <form name="screenshotForm" ng-submit="ctrl.takeScreenshot(\'panel\');ctrl.dismiss()" class="modal-content" novalidate>\n\t<div style="width:70%;" ng-if="ctrl.entriesCounter&&ctrl.entriesCounter==ctrl.settings.maxEntries">\n\t  There are already {{ctrl.entriesCounter}} = max configured number of screenshots in panel.\n\t  <br>\n\t  &rarr;&nbsp;The oldest screenshot will be removed!\n\t</div>\n\t<hr>\n\n\t<div class="gf-form-group section width-30" on-change="ctrl.render()">\n\t  <label class="gf-form-label">Screenshot source</label>\n\t\t<input type="radio" name=screenshotSelector value=".panel-container"  ng-model="ctrl.screenshotSelector"/> &nbsp; Panel &nbsp\n\t\t<input type="radio" name=screenshotSelector value=".dash-row" ng-model="ctrl.screenshotSelector"/> &nbsp; Row &nbsp;\n\t\t<input type="radio" name=screenshotSelector value=".dashboard-container" ng-model="ctrl.screenshotSelector"/> &nbsp; Dashboard\n\t</div>\n\n\t<div class="gf-form-group section width-30" on-change="ctrl.render()">\n\t  <label class="gf-form-label">Image format</label>\n\t  <input type="radio" name=imageFormat value="png" ng-model="ctrl.imageFormat"> &nbsp;PNG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="jpg" ng-model="ctrl.imageFormat"> &nbsp;JPEG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="svg" ng-model="ctrl.imageFormat"> &nbsp;SVG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="file" class="" ng-model="ctrl.imageFormat">&nbsp;File</input>\n\t  <span>(<i>File is always saved in PNG format</i>)</span>\n\t</div>\n\n\t<div ng-if="ctrl.imageFormat!=\'file\'">\n\t  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimeRange"  label-class="width-30" label="Add dashboard time range to screenshot?"></gf-form-switch>\n\t  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimestamp"  label-class="width-30" label="Add screenshot timestamp?"></gf-form-switch>\n\t  <div class="gf-form">\n\t\t<textarea rows="7" type="text" name="note" class="gf-form-input" ng-model="ctrl.note"\n\t\t  placeholder="Optional note to this screenshot &hellip;"\n\t\t  give-focus="true"\n\t\t  autocomplete="off" />\n\t\t</div>\n\t</div>\n\n\n\t<div class="gf-form-button-row text-center">\n\t  <button type="submit" class="btn btn-success fa fa-camera">&nbsp;Take screenshot as {{ctrl.imageFormat}}</button>\n\t  <button class="btn btn-inverse" ng-click="ctrl.dismiss();">Cancel</button>\n\t  <button type="reset" class="btn btn-inverse" ng-click="ctrl.note=\'\'">Reset</button>\n\t</div>\n  </form>\n</div>\n';
 
 var panelDefaults = {
 	disableDraggable: true,
@@ -143,6 +139,8 @@ var panelDefaults = {
 	timestampFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
 	timeRangeFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
 	screenshotSelector: '.panel-container', //what to screenshot
+	//screenshotSelector: '.dash-row',
+	//screenshotSelector: '.dashboard-container',
 	imageFormat: 'png',
 	maxEntries: 10 // older screenshots removed on FIFO basis. Set maxEntries = 0 for unlimited
 };
@@ -160,43 +158,31 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 		_.defaults(_this.settings, panelDefaults);
 
 		var self = _this;
-		var panelToScreenshot;
+		var screenshotSource;
 		_this.note = '';
-		_this.maxNoteLength = 15;
 		_this.entriesCounter = 0; // reset counter of added screenshots
-
-		window.THISCTRL = _this; //for debug only
-
+		/*
+  	window.THISCTRL = this; //for debug only
+  	window.INJECTOR = $injector; // debug
+  	window.SCOPE = $scope; //debug
+  */
 		_this.events.on('panel-teardown', _this.onPanelTeardown.bind(_this));
 		_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
 
-		(0, _jquery2.default)('body').on('click', '.screenshots-container-controls .screenshot-clear-all', function () {
-			(0, _jquery2.default)(this).parent().next().empty();
-			console.log('Removing all screenshots in panel for ', this);
-			self.entriesCounter = 0; // reset counter of added screenshots
-		});
-
-		(0, _jquery2.default)('div').on('click', '.screenshots-container .fa-remove', function () {
-			// remove single screenshot
-			if (self.entriesCounter > 0) {
-				(0, _jquery2.default)(this).parent().remove();(0, _jquery2.default)(this).unbind('click');
-				self.entriesCounter--;
-				console.debug('removing screenshot');
-				////appEvents.emit('render');
-			}
-		});
-
-		(0, _jquery2.default)(document).on("contextmenu", '.panel:not(".screenshot")', function ($event) {
-			if ($event.ctrlKey) {
-				// trigger screenshot dialog on Ctrl-RightClick
-				self.showScreenshotsModal($event);
-			}
-		});
+		if (!_this.contexmenuSet) {
+			$(document).on("contextmenu", '.panel:not(".screenshot")', function ($event) {
+				self.contexmenuSet = true;
+				if ($event.ctrlKey) {
+					// trigger screenshot dialog on Ctrl-RightClick
+					self.showScreenshotsModal($event);
+				}
+			});
+		}
 
 		if (_this.settings.disableDraggable) {
-			//hack:  disable draggable attribute to make text selection working in grafana panels
+			// hack: disable draggable attribute to make text selection working in grafana panels
 			// way-around for https://github.com/grafana/grafana/issues/2083
-			(0, _jquery2.default)('.panel').each(function (i, obj) {
+			$('.panel').each(function (i, obj) {
 				obj.setAttribute("draggable", "false");
 			});
 		}
@@ -204,13 +190,6 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 	}
 
 	_createClass(Ctrl, [{
-		key: 'clearAll',
-		value: function clearAll() {
-			(0, _jquery2.default)(this).parent().next().empty();
-			console.log('Removing all screenshots in panel for ', this);
-			self.entriesCounter = 0; // reset counter of added screenshots
-		}
-	}, {
 		key: 'dismiss',
 		value: function dismiss() {
 			_app_events2.default.emit('hide-modal');
@@ -218,21 +197,13 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 	}, {
 		key: 'showScreenshotsModal',
 		value: function showScreenshotsModal($event) {
-			var $panel = (0, _jquery2.default)($event.target).closest(this.settings.screenshotSelector);
-			this.panelToScreenshot = $panel.get(0);
 			var modalScope = this.$scope.$new(true);
 
 			$event.stopPropagation();
 			$event.preventDefault();
-			/*
-       window.E=$event;
-       window.T=this;
-       window.S=$event.data;
-   */
-			modalScope.ctrl = this;
+			this.screenshotEvent = $event;
 
-			window.MODSCOPE = modalScope;
-			//console.log('Now in showScreenshotsModal with modalScope=',modalScope);
+			modalScope.ctrl = this;
 
 			this.publishAppEvent('show-modal', {
 				templateHtml: modalTemplate,
@@ -252,24 +223,63 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 	}, {
 		key: 'onPanelTeardown',
 		value: function onPanelTeardown() {
+			console.log('panel Teardown event handler');
 			this.$timeout.cancel(this.nextTickPromise);
 			this.entriesCounter = 0;
-			//console.log('panel Teardown event handler');
+			this.contextmenuSet = false;
+			// turn off context menu dialog for screenshooter
+			$(document).off("contextmenu", '.panel:not(".screenshot")');
+		}
+	}, {
+		key: 'link',
+		value: function link(scope, elem, attrs, ctrl) {
+			//console.debug('called link(scope, elem, attrs, ctrl) with args:',scope, elem, attrs, ctrl );
+			this.screenshotsContainer = elem.find('.screenshots-container');
+
+			elem.on('click', '.screenshots-container .fa-remove', function () {
+				// remove single screenshot
+				console.debug('removing screenshot');
+				this.parentNode.remove();
+				ctrl.render();
+				if (ctrl.entriesCounter > 0) {
+					ctrl.entriesCounter--;
+				}
+			});
+
+			elem.on('click', '.screenshot-clear-all', function () {
+				console.log('Removing all screenshots in panel for ', this);
+				$(this.parentNode.nextElementSibling).empty();
+				ctrl.entriesCounter = 0; // reset counter of added screenshots
+				ctrl.render();
+			});
+			/*
+   	scope.$watch('ctrl.entriesCounter', newVal => {
+   	  if (newVal !== undefined) {
+           console.debug('entriesCounter watch:',newVal);
+   	  }
+   	});
+   */
 		}
 	}, {
 		key: 'takeScreenshot',
-		value: function takeScreenshot(destination) {
+		value: function takeScreenshot() {
+			var destination = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'panel';
 			var imageFormat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
+			var self = this;
 			var timestamp = '',
 			    timerange = '',
 			    ctime = new Date().getTime(),
 			    from = 'N/A',
 			    to = 'N/A';
-			var source = this.panelToScreenshot;
 			var maxEntries = this.settings.maxEntries;
-			var self = this;
 			var fmt = imageFormat || this.imageFormat || this.settings.imageFormat || 'png';
+			var selector = this.screenshotSelector || this.settings.screenshotSelector;
+			var source = $(this.screenshotEvent.target).closest(selector).get(0);
+			console.log('source:', source);
+			//this.screenshotSource = source;
+
+			console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
 
 			destination = destination || 'panel';
 			if (fmt === 'file') {
@@ -297,8 +307,7 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 
 				case "panel":
 					if (maxEntries > 0 && this.entriesCounter >= maxEntries) {
-						//alert('Max configured number of screenshots in panel already reached! Removing the oldest screenshot.');
-						(0, _jquery2.default)('#screenshots .screenshots-container .screenshot:first').remove();
+						self.screenshotsContainer.find('.screenshot:first').remove();
 						this.entriesCounter--;
 					}
 
@@ -307,7 +316,7 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 
 					var dom2img = fmt === 'jpg' ? _domToImage2.default.toJpeg : fmt == 'svg' ? _domToImage2.default.toSvg : _domToImage2.default.toPng;
 
-					var Note = '<div class="screenshot-note" contenteditable=true style="display:flex;flex-wrap:wrap;flex-direction:column;">' + timerange + timestamp + '<hr>' + this.note + '</div>';
+					var note = '<div class="screenshot-note" contenteditable=true>' + timerange + timestamp + '<hr>' + this.note + '</div>';
 
 					dom2img(source).then(function (dataURL) {
 						var img = new Image();
@@ -315,8 +324,8 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 						img.alt = 'Dashboard range: ' + from + ' to ' + to;
 						img.width = source.clientWidth;
 						img.height = source.clientHeight;
-						(0, _jquery2.default)('#screenshots .screenshots-container').append('<div class="screenshot" data-ctime=' + ctime + ' style="width:' + source.clientWidth + 'px;">' + '<span class="fa fa-remove" style="color:red;align-self:flex-start;"></span></div>');
-						(0, _jquery2.default)('#screenshots .screenshots-container .screenshot').last().append(img).append(Note);
+						self.screenshotsContainer.append('<div class="screenshot" data-ctime=' + ctime + ' style="width:' + source.clientWidth + 'px;">' + '<span class="fa fa-remove" style="color:red;align-self:flex-start;"></span></div>');
+						self.screenshotsContainer.find('.screenshot:last').append(img).append(note);
 					});
 					break;
 
@@ -339,12 +348,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global) {
@@ -1119,7 +1122,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1389,13 +1392,13 @@ var saveAs = exports.saveAs = window.saveAs || function (view) {
 exports.default = saveAs;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(8);
+var content = __webpack_require__(7);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1403,7 +1406,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(10)(content, options);
+var update = __webpack_require__(9)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -1420,21 +1423,21 @@ if(false) {
 }
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(9)(undefined);
+exports = module.exports = __webpack_require__(8)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".screenshots-container { display:flex; flex-direction:row; flex-wrap:wrap; align-items:stretch; align-content:flex-start; }\n.screenshot { display:flex; flex-direction:column; flex-wrap:wrap; align-items:flex-start; width:100%; }\n.screenshot:hover {border:1px solid #c66!important}\n.screenshot-note {width:100%;}\n.screenshots-container-controls { width:100%;}\n.screenshot-timestamp,.screenshot-timerange { font-style:italic; width:100%; padding-left:5px;}\n/*.screenshot-clear-all,.screenshot-save-png,.screenshot-save-jpg { padding-left:20px; padding-right:20px; }*/\n", ""]);
+exports.push([module.i, ".screenshots-container { display:flex; flex-direction:row; flex-wrap:wrap; align-items:stretch; align-content:flex-start; }\n.screenshot { display:flex; flex-direction:column; flex-wrap:wrap; align-items:flex-start; width:100%; }\n.screenshot:hover {border:1px solid #c66!important}\n.screenshot-note {width:100%;display:flex;flex-wrap:wrap;flex-direction:column;}\n.screenshots-container-controls { width:100%;}\n.screenshot-timestamp,.screenshot-timerange { font-style:italic; width:100%; padding-left:5px;}\n/*.screenshot-clear-all,.screenshot-save-png,.screenshot-save-jpg { padding-left:20px; padding-right:20px; }*/\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /*
@@ -1516,7 +1519,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1572,7 +1575,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(11);
+var	fixUrls = __webpack_require__(10);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1888,7 +1891,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 
