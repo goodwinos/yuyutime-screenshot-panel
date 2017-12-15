@@ -1,4 +1,3 @@
-///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 import { PanelCtrl } from 'grafana/app/plugins/sdk';
 import appEvents from 'grafana/app/core/app_events';
 
@@ -80,15 +79,13 @@ const  modalTemplate = `
 `
 
 const panelDefaults = {
-  disableDraggable: true,
+  disableDraggable: false,
   locale: 'en',
   addTimestamp: true,
   addTimeRange: true,
   timestampFormat:'YYYY-MM-DD HH:mm:ss(Z)',
   timeRangeFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
   screenshotSelector: '.panel-container', //what to screenshot
-  //screenshotSelector: '.dash-row',
-  //screenshotSelector: '.dashboard-container',
   imageFormat: 'png',
   maxEntries: 10 // older screenshots removed on FIFO basis. Set maxEntries = 0 for unlimited
 }
@@ -104,11 +101,7 @@ export class Ctrl extends PanelCtrl {
 	var screenshotSource;
 	this.note = '';
 	this.entriesCounter = 0; // reset counter of added screenshots
-/*
-	window.THISCTRL = this; //for debug only
-	window.INJECTOR = $injector; // debug
-	window.SCOPE = $scope; //debug
-*/
+
 	this.events.on('panel-teardown', this.onPanelTeardown.bind(this));
 	this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
 
@@ -154,11 +147,11 @@ export class Ctrl extends PanelCtrl {
   }
 
   onRender() {
-	console.log('panel render event handler');
+	//console.log('panel render event handler');
   }
 
   onPanelTeardown() {
-	console.log('panel Teardown event handler');
+	//console.log('panel Teardown event handler');
     this.$timeout.cancel(this.nextTickPromise);
     this.entriesCounter = 0;
 	this.contextmenuSet = false;
@@ -171,7 +164,7 @@ export class Ctrl extends PanelCtrl {
 	this.screenshotsContainer = elem.find('.screenshots-container');
 
 	elem.on('click','.screenshots-container .fa-remove',function(){ // remove single screenshot
-	  console.debug('removing screenshot');
+	  //console.debug('removing screenshot');
 	  this.parentNode.remove();
 	  ctrl.render();
 	  if (ctrl.entriesCounter > 0){
@@ -180,18 +173,11 @@ export class Ctrl extends PanelCtrl {
 	});
 
 	elem.on('click', '.screenshot-clear-all', function() { 
-	  console.log('Removing all screenshots in panel for ',this); 
+	  //console.log('Removing all screenshots in panel for ',this); 
 	  $(this.parentNode.nextElementSibling).empty();
 	  ctrl.entriesCounter = 0; // reset counter of added screenshots
 	  ctrl.render();
 	});
-/*
-	scope.$watch('ctrl.entriesCounter', newVal => {
-	  if (newVal !== undefined) {
-        console.debug('entriesCounter watch:',newVal);
-	  }
-	});
-*/
   }
 
   takeScreenshot(destination='panel', imageFormat=null) {
@@ -200,11 +186,9 @@ export class Ctrl extends PanelCtrl {
 	let maxEntries = this.settings.maxEntries;
 	let fmt = imageFormat || this.imageFormat || this.settings.imageFormat || 'png';
 	let selector = this.screenshotSelector || this.settings.screenshotSelector;
-	var source = $(this.screenshotEvent.target).closest(selector).get(0);
-	console.log('source:', source);
-	//this.screenshotSource = source;
+	let source = $(this.screenshotEvent.target).closest(selector).get(0);
 
-	console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
+	//console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
 
 	destination = destination || 'panel';
 	if (fmt==='file') {
@@ -238,7 +222,7 @@ export class Ctrl extends PanelCtrl {
 		}
 
 		this.entriesCounter++;
-		console.log('Number of screenshots in panel: ', this.entriesCounter);
+		//console.log('Number of screenshots in panel: ', this.entriesCounter);
 	
 		let dom2img = (fmt==='jpg') ? domtoimage.toJpeg : (fmt=='svg') ? domtoimage.toSvg: domtoimage.toPng;
 

@@ -85,7 +85,6 @@ var _sdk = __webpack_require__(0);
 
 var _ctrl = __webpack_require__(2);
 
-///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 exports.PanelCtrl = _ctrl.Ctrl;
 
 /***/ }),
@@ -124,23 +123,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } ///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var moduleTemplate = '\n<div>\n  <div class="row screenshots-container-controls"  ng-model="ctrl.entriesCounter" ng-change="ctrl.render()">\n\t<button class="btn btn-inverse screenshot-clear-all"><i class="fa fa-remove"></i>\n\t  &nbsp;Clear All ({{ctrl.entriesCounter}})\n\t</button>\n\t&nbsp;<span>Screenshots in panel: {{ctrl.entriesCounter}}</span>\n  </div>\n  <div class="screenshots-container">\n\t<!-- screenshots with clear btn, timestamps and note go here -->\n  </div>\n  <hr>\n</div>\n';
 
 var modalTemplate = '\n<div class="modal-body">\n  <div class="modal-header">\n\t<h2 class="modal-header-title">\n\t  <i class="fa fa-camera"></i>\n\t  <span class="p-l-1">Take screenshot</span>\n\t</h2>\n\t<span>Screenshots in panel:  <strong>{{ctrl.entriesCounter}}</strong> / max {{ctrl.settings.maxEntries}}</span>\n\t<a class="modal-header-close" ng-click="ctrl.dismiss();">\n\t  <i class="fa fa-remove"></i>\n\t</a>\n  </div>\n\n  <form name="screenshotForm" ng-submit="ctrl.takeScreenshot(\'panel\');ctrl.dismiss()" class="modal-content" novalidate>\n\t<div style="width:70%;" ng-if="ctrl.entriesCounter&&ctrl.entriesCounter==ctrl.settings.maxEntries">\n\t  There are already {{ctrl.entriesCounter}} = max configured number of screenshots in panel.\n\t  <br>\n\t  &rarr;&nbsp;The oldest screenshot will be removed!\n\t</div>\n\t<hr>\n\n\t<div class="gf-form-group section width-30" on-change="ctrl.render()">\n\t  <label class="gf-form-label">Screenshot source</label>\n\t\t<input type="radio" name=screenshotSelector value=".panel-container"  ng-model="ctrl.screenshotSelector"/> &nbsp; Panel &nbsp\n\t\t<input type="radio" name=screenshotSelector value=".dash-row" ng-model="ctrl.screenshotSelector"/> &nbsp; Row &nbsp;\n\t\t<input type="radio" name=screenshotSelector value=".dashboard-container" ng-model="ctrl.screenshotSelector"/> &nbsp; Dashboard\n\t</div>\n\n\t<div class="gf-form-group section width-30" on-change="ctrl.render()">\n\t  <label class="gf-form-label">Image format</label>\n\t  <input type="radio" name=imageFormat value="png" ng-model="ctrl.imageFormat"> &nbsp;PNG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="jpg" ng-model="ctrl.imageFormat"> &nbsp;JPEG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="svg" ng-model="ctrl.imageFormat"> &nbsp;SVG </input>&nbsp;\n\t  <input type="radio" name=imageFormat value="file" class="" ng-model="ctrl.imageFormat">&nbsp;File</input>\n\t  <span>(<i>File is always saved in PNG format</i>)</span>\n\t</div>\n\n\t<div ng-if="ctrl.imageFormat!=\'file\'">\n\t  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimeRange"  label-class="width-30" label="Add dashboard time range to screenshot?"></gf-form-switch>\n\t  <gf-form-switch class="gf-form" checked="ctrl.settings.addTimestamp"  label-class="width-30" label="Add screenshot timestamp?"></gf-form-switch>\n\t  <div class="gf-form">\n\t\t<textarea rows="7" type="text" name="note" class="gf-form-input" ng-model="ctrl.note"\n\t\t  placeholder="Optional note to this screenshot &hellip;"\n\t\t  give-focus="true"\n\t\t  autocomplete="off" />\n\t\t</div>\n\t</div>\n\n\n\t<div class="gf-form-button-row text-center">\n\t  <button type="submit" class="btn btn-success fa fa-camera">&nbsp;Take screenshot as {{ctrl.imageFormat}}</button>\n\t  <button class="btn btn-inverse" ng-click="ctrl.dismiss();">Cancel</button>\n\t  <button type="reset" class="btn btn-inverse" ng-click="ctrl.note=\'\'">Reset</button>\n\t</div>\n  </form>\n</div>\n';
 
 var panelDefaults = {
-	disableDraggable: true,
+	disableDraggable: false,
 	locale: 'en',
 	addTimestamp: true,
 	addTimeRange: true,
 	timestampFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
 	timeRangeFormat: 'YYYY-MM-DD HH:mm:ss(Z)',
 	screenshotSelector: '.panel-container', //what to screenshot
-	//screenshotSelector: '.dash-row',
-	//screenshotSelector: '.dashboard-container',
 	imageFormat: 'png',
 	maxEntries: 10 // older screenshots removed on FIFO basis. Set maxEntries = 0 for unlimited
 };
@@ -161,11 +157,7 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 		var screenshotSource;
 		_this.note = '';
 		_this.entriesCounter = 0; // reset counter of added screenshots
-		/*
-  	window.THISCTRL = this; //for debug only
-  	window.INJECTOR = $injector; // debug
-  	window.SCOPE = $scope; //debug
-  */
+
 		_this.events.on('panel-teardown', _this.onPanelTeardown.bind(_this));
 		_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
 
@@ -218,12 +210,12 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 	}, {
 		key: 'onRender',
 		value: function onRender() {
-			console.log('panel render event handler');
+			//console.log('panel render event handler');
 		}
 	}, {
 		key: 'onPanelTeardown',
 		value: function onPanelTeardown() {
-			console.log('panel Teardown event handler');
+			//console.log('panel Teardown event handler');
 			this.$timeout.cancel(this.nextTickPromise);
 			this.entriesCounter = 0;
 			this.contextmenuSet = false;
@@ -238,7 +230,7 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 
 			elem.on('click', '.screenshots-container .fa-remove', function () {
 				// remove single screenshot
-				console.debug('removing screenshot');
+				//console.debug('removing screenshot');
 				this.parentNode.remove();
 				ctrl.render();
 				if (ctrl.entriesCounter > 0) {
@@ -247,18 +239,11 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 			});
 
 			elem.on('click', '.screenshot-clear-all', function () {
-				console.log('Removing all screenshots in panel for ', this);
+				//console.log('Removing all screenshots in panel for ',this); 
 				$(this.parentNode.nextElementSibling).empty();
 				ctrl.entriesCounter = 0; // reset counter of added screenshots
 				ctrl.render();
 			});
-			/*
-   	scope.$watch('ctrl.entriesCounter', newVal => {
-   	  if (newVal !== undefined) {
-           console.debug('entriesCounter watch:',newVal);
-   	  }
-   	});
-   */
 		}
 	}, {
 		key: 'takeScreenshot',
@@ -276,10 +261,8 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 			var fmt = imageFormat || this.imageFormat || this.settings.imageFormat || 'png';
 			var selector = this.screenshotSelector || this.settings.screenshotSelector;
 			var source = $(this.screenshotEvent.target).closest(selector).get(0);
-			console.log('source:', source);
-			//this.screenshotSource = source;
 
-			console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
+			//console.debug(this.screenshotSelector, this.settings.screenshotSelector, selector, source);
 
 			destination = destination || 'panel';
 			if (fmt === 'file') {
@@ -312,7 +295,7 @@ var Ctrl = exports.Ctrl = function (_PanelCtrl) {
 					}
 
 					this.entriesCounter++;
-					console.log('Number of screenshots in panel: ', this.entriesCounter);
+					//console.log('Number of screenshots in panel: ', this.entriesCounter);
 
 					var dom2img = fmt === 'jpg' ? _domToImage2.default.toJpeg : fmt == 'svg' ? _domToImage2.default.toSvg : _domToImage2.default.toPng;
 

@@ -1,21 +1,22 @@
 {
   "name": "yuyutime-screenshot-panel",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.0.3",
+  "description": "Screenshot panel plugin for Grafana",
   "main": "dist/module.js",
   "scripts": {
     "build": "webpack"
   },
-  "keywords": [],
+  "keywords": ["grafana","panel","plugin","screenshot"],
   "author": "Yuri Lachin",
   "license": "MIT",
-  "repository": "http://bubo.as20485.net:3000/yuyu/grafana-screenshot-panel",
+  "repository": "https://github.com/yuyutime/yuyutime-screenshot-panel",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.7",
+    "style-loader":"^0.19.0",
     "loader-utils": "^1.1.0",
     "webpack": "^3.6.0"
   },

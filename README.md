@@ -6,7 +6,7 @@
 This plugin relies heavily on [dom-to-image library](https://github.com/tsayen/dom-to-image)
 (see details on browser support there)
 and also uses
-[save-as](https://github.com/noderaider/save-as) - provides ES6 version of FileSaver.js window.saveAs functionality.
+[save-as](https://github.com/noderaider/save-as) (provides ES6 version of FileSaver.js window.saveAs functionality).
 
 Initial plugin skeleton is based on
 [grafana plugin template](https://github.com/CorpGlory/grafana-plugin-template-webpack)
@@ -36,6 +36,8 @@ After this limit is reached the older screenshot will be deleted on a FIFO basis
 So, it's best to empty it before action.
 * If screenshot panel is not shown (row is collapsed) **_Ctrl-RightClick_** binding is disabled.
 * All screenshots in panel are lost when this panel is hidden or when you switch to another dashboard.
+* By default Grafana panels don't allow user to select text with mouse. **Enable selection tweak** panel option when enabled tries to fix it and make text selection working in all grafana panels
+on current dashboard. This tweek is experimental and turned off by default.
 <hr>
 
 ## Build plugin
@@ -59,3 +61,7 @@ While this plugin is not in offical Grafana plugins repository it has to be inst
 [![NPM](https://nodei.co/npm/dom-to-image.png?stars=true&downloads=true)](https://nodei.co/npm/dom-to-image/)
 
 [![NPM](https://nodei.co/npm/save-as.png?stars=true&downloads=true)](https://nodei.co/npm/save-as/)
+
+## Demo screenshot
+
+![screenshot](demo-screenshot.png)

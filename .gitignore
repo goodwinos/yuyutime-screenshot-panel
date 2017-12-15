@@ -13,6 +13,7 @@ docs/changed-files
 # locally required config files
 public/css/*.min.css
 
+Caddyfile
 
 # Editor and other junk
 *.tmp
