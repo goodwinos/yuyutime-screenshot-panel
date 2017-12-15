@@ -19,9 +19,9 @@
   	  "large": "screenshot-panel.svg"
 	},
     "links": [ ],
-    "screenshots": [ ],
-    "version": "0.0.2",
-    "updated": "2017-11-30"
+    "screenshots": ["demo-screenshot.png"],
+    "version": "0.0.3",
+    "updated": "2017-12-15"
   },
 
   "dependencies": {

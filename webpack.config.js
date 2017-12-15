@@ -32,7 +32,8 @@ module.exports = {
       { from: '../README.md' },
       { from: 'plugin.json' },
       { from: 'editor.html' },
-      { from: 'screenshot-panel.svg' }
+      { from: 'screenshot-panel.svg' },
+      { from: '../demo-screenshot.png' }
     ])
   ],
   resolve: {
